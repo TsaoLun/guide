@@ -3,7 +3,7 @@ use std::vec;
 use burn::{data::{dataloader::DataLoaderBuilder, dataset::vision::MnistDataset}, optim::AdamConfig, prelude::*, record::CompactRecorder, tensor::backend::AutodiffBackend, train::{metric::{AccuracyMetric, LossMetric}, ClassificationOutput, LearnerBuilder, TrainOutput, TrainStep, ValidStep}};
 use nn::loss::CrossEntropyLossConfig;
 
-use crate::{data::MnistBatcher, model::{Model, ModelConfig}};
+use crate::{data::MnistProcessor, model::{Model, ModelConfig}};
 use crate::data::MnistBatch;
 
 impl<B: Backend> Model<B> {
@@ -62,8 +62,8 @@ pub fn train<B: AutodiffBackend>(artifact_dir: &str, config: TrainingConfig, dev
 
     B::seed(config.seed);
 
-    let batcher_train = MnistBatcher::<B>::new(device.clone());
-    let batcher_valid = MnistBatcher::<B::InnerBackend>::new(device.clone());
+    let batcher_train = MnistProcessor::<B>::new(device.clone());
+    let batcher_valid = MnistProcessor::<B::InnerBackend>::new(device.clone());
     let dataloader_train = DataLoaderBuilder::new(batcher_train)
         .batch_size(config.batch_size)
         .shuffle(config.seed)
