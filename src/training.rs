@@ -57,7 +57,7 @@ fn create_artifact_dir(artifact_dir: &str) {
 pub fn train<B: AutodiffBackend>(artifact_dir: &str, config: TrainingConfig, device: B::Device) {
     create_artifact_dir(artifact_dir);
     config
-        .save(format!("{artifact_dir}/config.toml"))
+        .save(format!("{artifact_dir}/config.json"))
         .expect("Config should be saved successfully");
 
     B::seed(config.seed);
