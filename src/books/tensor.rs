@@ -1,4 +1,4 @@
-use burn::{backend::Wgpu, tensor::{Int, Tensor, TensorData}};
+use burn::{backend::Wgpu, tensor::{check_closeness, Int, Tensor, TensorData}};
 
 type Backend = Wgpu;
 
@@ -34,4 +34,25 @@ fn test_ownership() {
     let max = input.clone().max();
     let input = (input - min.clone()).div(max - min);
     println!("{}", input.to_data());
+}
+
+#[test]
+fn test_tensor_display() {
+    let tensor = Tensor::<Backend, 2>::full([2, 3], 0.123456789, &Default::default());
+    println!("{}", tensor);
+    println!("{:.2}", tensor);
+}
+
+type B = burn::backend::NdArray;
+
+#[test]
+fn test_check_closeness() {
+    let device = Default::default();
+    let tensor1 = Tensor::<B, 1>::from_floats(
+        [1., 2., 3., 4., 5., 6.001, 7.002, 8.003, 9.004, 10.1],
+        &device,);
+    let tensor2 = Tensor::<B, 1>::from_floats(
+        [1., 2., 3., 4., 5., 6.0, 7.001, 8.002, 9.003, 10.004],
+        &device,);
+    check_closeness(&tensor1, &tensor2);
 }
